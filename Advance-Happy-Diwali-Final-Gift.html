@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advance Happy Diwali - Final Gift</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0a0a2a, #1a1a4a);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .diya {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, gold 10%, transparent 70%);
+            border-radius: 50%;
+            animation: flicker 1s infinite alternate;
+        }
+        .diya.flame {
+            background: radial-gradient(circle, orange 10%, transparent 70%);
+            animation: glow 1s infinite alternate;
+        }
+        @keyframes flicker {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px gold; }
+            100% { box-shadow: 0 0 20px gold; }
+        }
+        .card {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid gold;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 0 20px gold, 0 0 40px orange;
+            animation: cardGlow 2s infinite alternate;
+            max-width: 90%;
+            z-index: 10;
+        }
+        @keyframes cardGlow {
+            from { box-shadow: 0 0 20px gold, 0 0 40px orange; }
+            to { box-shadow: 0 0 30px gold, 0 0 60px orange; }
+        }
+        h1 {
+            color: gold;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #fff;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .cracker-btn {
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 10px;
+            background: gold;
+            color: #000;
+            cursor: pointer;
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .music-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 0.5rem 1rem;
+            background: gold;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+    <div class="diya" style="bottom: 10px; left: 10px;"></div>
+    <div class="diya" style="bottom: 10px; right: 10px;"></div>
+    <div class="diya" style="top: 10px; left: 10px;"></div>
+    <div class="diya" style="top: 10px; right: 10px;"></div>
+    <div class="diya flame" style="bottom: 10px; left: 50%; transform: translateX(-50%);"></div>
+    <div class="card">
+        <h1>🪔✨ 𝐀𝐃𝐕𝐀𝐍𝐂𝐄 𝐇𝐀𝐏𝐏𝐘 𝐃𝐈𝐖𝐀𝐋𝐈, 𝐌𝐘 𝐃𝐄𝐀𝐑 𝐅𝐑𝐈𝐄𝐍𝐃𝐒! 🎇🤍</h1>
+        <p>May this Diwali bring endless happiness, beautiful memories, lots of laughter, and countless blessings into your lives. 🌷✨ May every diya light up your dreams, every sparkle brighten your smile, and every moment fill your heart with peace and positivity. 🧿💗
+
+Thank you for being such a beautiful part of my life. May our friendship always shine brighter than the lights of Diwali and stay filled with love, fun, and unforgettable memories. 🫶🏻🎀
+
+Wishing you and your families a Diwali filled with prosperity, peace, happiness, and sweetness! 🪷🪔
+
+🎆 𝐒𝐓𝐀𝐘 𝐇𝐀𝐏𝐏𝐘, 𝐒𝐓𝐀𝐘 𝐁𝐋𝐄𝐒𝐒𝐄𝐃, 𝐀𝐍𝐃 𝐊𝐄𝐄𝐏 𝐒𝐇𝐈𝐍𝐈𝐍𝐆! 🎆
+
+💗🪔 𝐀𝐃𝐕𝐀𝐍𝐂𝐄 𝐇𝐀𝐏𝐏𝐘 𝐃𝐈𝐖𝐀𝐋𝐈! 🪔💗</p>
+        <button class="cracker-btn" id="crackerBtn">🎆 Burst More Crackers</button>
+    </div>
+    <canvas id="fireworksCanvas"></canvas>
+    <audio id="bgMusic" loop>
+        <source src="https://www.youtube.com/watch?v=kwjp52YYlwQ" type="audio/mpeg">
+    </audio>
+    <button class="music-toggle" id="musicToggle">🔊 Music</button>
+    <script>
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 10,
+                    y: (Math.random() - 0.5) * 10
+                };
+                this.alpha = 1;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.02;
+            }
+        }
+
+        function createFirework(x, y) {
+            const colors = ['#FFD700', '#FFA500', '#FF4500', '#FFFFFF'];
+            for (let i = 0; i < 50; i++) {
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((particle, index) => {
+                particle.update();
+                particle.draw();
+                if (particle.alpha <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+        }
+
+        setInterval(() => {
+            createFirework(Math.random() * canvas.width, Math.random() * canvas.height);
+        }, 500);
+
+        canvas.addEventListener('click', (e) => {
+            createFirework(e.clientX, e.clientY);
+        });
+
+        document.getElementById('crackerBtn').addEventListener('click', () => {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    createFirework(Math.random() * canvas.width, Math.random() * canvas.height);
+                }, i * 50);
+            }
+        });
+
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        let isPlaying = false;
+
+        bgMusic.play().then(() => {
+            isPlaying = true;
+            musicToggle.textContent = '🔇 Pause';
+        }).catch(() => {
+            isPlaying = false;
+            musicToggle.textContent = '🔊 Music';
+        });
+
+        musicToggle.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicToggle.textContent = '🔊 Music';
+            } else {
+                bgMusic.play();
+                musicToggle.textContent = '🔇 Pause';
+            }
+            isPlaying = !isPlaying;
+        });
+
+        animate();
+    </script>
+</body>
+</html>

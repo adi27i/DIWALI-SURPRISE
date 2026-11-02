@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advance Happy Diwali - Page 2</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #2c3e50, #bdc3c7);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .card {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid gold;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 0 20px gold, 0 0 40px orange;
+            animation: glow 2s infinite alternate;
+            max-width: 90%;
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 20px gold, 0 0 40px orange; }
+            to { box-shadow: 0 0 30px gold, 0 0 60px orange; }
+        }
+        h1 {
+            color: gold;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .yes-btn {
+            background: gold;
+            color: #000;
+        }
+        .no-btn {
+            background: #ff4500;
+            color: #fff;
+            position: absolute;
+            z-index: 10;
+        }
+        @media (max-width: 768px) {
+            .no-btn {
+                touch-action: manipulation;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🪔 Advance Happy Diwali</h1>
+        <p>Are you still sure?</p>
+        <div class="buttons">
+            <button class="yes-btn" onclick="window.location.href='website3.html'">YES</button>
+            <button class="no-btn" id="noBtn">NO</button>
+        </div>
+    </div>
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        let isMobile = window.innerWidth <= 768;
+
+        function moveRandomly() {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+        }
+
+        if (isMobile) {
+            noBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                moveRandomly();
+            });
+        } else {
+            setInterval(moveRandomly, 400);
+        }
+        noBtn.addEventListener('click', () => window.location.href = 'website3.html');
+    </script>
+</body>
+</html>
